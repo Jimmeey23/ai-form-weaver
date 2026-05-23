@@ -204,21 +204,21 @@ export const STARTER_FORM: FormSchema = {
     "Please complete your self-assessment and authorize the compensation schedule for the upcoming cycle.",
   fields: [
     {
-      id: newId(),
+      id: "starter-1",
       type: "short_answer",
       label: "What was your primary achievement this quarter?",
       placeholder: "Type your answer here...",
       required: true,
     },
     {
-      id: newId(),
+      id: "starter-2",
       type: "opinion_scale",
       label: "How would you rate your team collaboration?",
       min: 1,
       max: 5,
     },
     {
-      id: newId(),
+      id: "starter-3",
       type: "multiple_choice",
       label: "Which area do you want to grow in next quarter?",
       options: [
@@ -229,7 +229,7 @@ export const STARTER_FORM: FormSchema = {
       ],
     },
     {
-      id: newId(),
+      id: "starter-4",
       type: "signature",
       label: "Authorized Signature",
       required: true,
