@@ -86,7 +86,7 @@ export function ChatPanel() {
             <div className="text-[10px] font-mono text-muted-foreground mb-1.5 uppercase tracking-widest">
               {m.role === "user" ? "You" : "AI"}
             </div>
-            {m.pending ? (
+            {m.role === "assistant" && m.pending ? (
               <div className="bg-muted/60 border border-dashed border-border p-3 rounded-xl rounded-tl-none">
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <Loader2 className="size-3 animate-spin" />
