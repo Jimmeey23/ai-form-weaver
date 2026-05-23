@@ -36,14 +36,34 @@ Given a user's natural-language description and the current form, produce an upd
 Allowed field "type" values (use EXACTLY these strings):
 heading, paragraph, banner, short_answer, long_answer, rich_text, dropdown, picture_choice, multiselect, switch, multiple_choice, single_checkbox, checkbox_grid, choice_matrix, likert_table, date_picker, datetime_picker, time_picker, date_range, appointment_slots, rating, ranking, star_rating, slider, opinion_scale, email, email_otp, phone, address, number, currency, stripe_payment, url, color_picker, password, file_upload, signature, voice_recording, submission_picker, subform, section_break, section_collapse, divider, spacer, html_snippet, page_break, hidden_field, image, video, pdf_viewer, social_links, lookup_field, formula_field, conditional_field, dependent_field, momence_member_search, momence_sessions_picker, momence_hosted_class.
 
+FIELD TYPE SELECTION GUIDE — pick the MOST SPECIFIC type. Do NOT default to multiselect/multiple_choice for everything:
+- Appointment / booking / time slot / "pick a time" → appointment_slots (NOT multiselect, NOT dropdown).
+- Single date → date_picker. Date + time → datetime_picker. Just time → time_picker. Range of dates → date_range.
+- Email address → email. Phone → phone. Mailing address → address. URL/website → url. Password → password.
+- Money / price / amount in $ → currency. Numeric quantity → number.
+- Payment / checkout / "pay $X" → stripe_payment (set amount + currency).
+- File / resume / document upload → file_upload. Image upload only is still file_upload.
+- Signature / sign here → signature. Voice / audio recording → voice_recording.
+- 1–5 stars → star_rating. 1–10 / NPS / scale → opinion_scale. Drag to rank order → ranking. Drag a value → slider.
+- Yes/no toggle → switch. Single agree checkbox / terms → single_checkbox.
+- Pick ONE from a list → multiple_choice (≤6 opts) or dropdown (>6 opts) or picture_choice (visual).
+- Pick MANY from a list → multiselect.
+- Grid of checkboxes (rows × cols, multi per row) → checkbox_grid.
+- Single choice per row across columns → choice_matrix. Agree↔Disagree scale matrix → likert_table.
+- Search/select an existing record → lookup_field or submission_picker.
+- Auto-computed value → formula_field. Show/hide based on another field → conditional_field / dependent_field.
+- Section title between groups of fields → section_break. Big intro banner → banner. Static info text → paragraph. Title → heading.
+- Momence-specific: member lookup → momence_member_search; class/session picker → momence_sessions_picker; live class embed → momence_hosted_class.
+
 Rules:
-- Choose the BEST field type for each question. Use rich variety (sliders, ratings, dropdowns, signatures, payments, etc.) when appropriate.
-- For choice fields, always provide 2-7 thoughtful options.
-- For matrix/likert, fill rows and columns.
-- For payments, include amount and currency.
-- Add section_break or banner fields to organize long forms.
+- Use rich VARIETY. A good form mixes input types — avoid making everything a multiselect or short_answer.
+- For choice fields, provide 2-7 thoughtful, realistic options (label + lowercase_value).
+- For matrix/likert, fill rows AND columns.
+- For payments, include amount and currency (e.g. amount: 4900, currency: "usd").
+- For sliders/scales, set min, max, and step.
+- Organize long forms with section_break or banner blocks.
 - Keep field labels concise and human.
-- If the user is iterating, preserve existing fields where sensible and add/modify only what's needed.
+- If iterating, preserve existing fields where sensible and only add/modify what's needed.
 - Provide a clean, engaging form title and description.
 
 Return the COMPLETE new form via the build_form tool.`;
@@ -60,7 +80,7 @@ export const generateForm = createServerFn({ method: "POST" })
       method: "POST",
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+        model: "google/gemini-2.5-pro",
         messages: [
           { role: "system", content: SYSTEM },
           { role: "user", content: userMsg },
